@@ -1,0 +1,108 @@
+
+# coding: utf-8
+
+# In[1]:
+
+import pandas as pd
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import roc_auc_score
+
+
+# In[2]:
+
+X=pd.read_csv("titanic/train.csv")
+y=X.pop("Survived")
+
+
+# In[3]:
+
+X["Age"].fillna(X.Age.mean(), inplace=True)
+
+
+# In[4]:
+
+numeric_variables=list(X.dtypes[X.dtypes != "object"].index)
+
+
+# In[5]:
+
+X[numeric_variables].head()
+
+
+# In[6]:
+
+model=RandomForestRegressor(n_estimators=100,oob_score=True,random_state=42)
+model.fit(X[numeric_variables],y)
+
+
+# In[7]:
+
+model.oob_score_
+
+
+# In[8]:
+
+model.oob_prediction_
+
+
+# In[9]:
+
+y_oob=model.oob_prediction_
+print "c-stat", roc_auc_score(y,y_oob)
+
+
+# In[10]:
+
+model.predict("titanic/test.csv")
+
+
+# In[11]:
+
+X1=pd.read_csv("titanic/test.csv")
+model.predict(X1)
+
+
+# In[12]:
+
+X1.describe()
+
+
+# In[13]:
+
+X1["Age"].fillna(X1.Age.mean(), inplace=True)
+
+
+# In[14]:
+
+X1.describe()
+
+
+# In[ ]:
+
+numeric_variables=list(X1.dtypes[X1.dtypes != "object"].index)
+
+
+# In[15]:
+
+X1["Fare"].fillna(X1.Fare.mean(), inplace=True)
+
+
+# In[16]:
+
+X1.describe()
+
+
+# In[18]:
+
+numeric_variables2=list(X1.dtypes[X1.dtypes != "object"].index)
+
+
+# In[19]:
+
+model.predict(X1[numeric_variables])
+
+
+# In[ ]:
+
+
+
